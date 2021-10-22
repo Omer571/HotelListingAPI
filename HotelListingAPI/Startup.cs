@@ -1,5 +1,7 @@
 using HotelListingAPI.Configurations;
 using HotelListingAPI.Data;
+using HotelListingAPI.IRepository;
+using HotelListingAPI.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace HotelListingAPI
@@ -34,7 +37,9 @@ namespace HotelListingAPI
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(op =>
+                op.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
 
             // AddCors who is allowed to access API
             services.AddCors(options => {
@@ -45,7 +50,16 @@ namespace HotelListingAPI
                 );
             });
 
+            // Mapping data to DTO model (we return DTO from api not plain data)
             services.AddAutoMapper(typeof(MapperInitializer));
+
+            // For controllers
+            // AddTransient means every time is needed, a new instance is recreated
+            // (fresh copy of IUnitOfWork)
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            // AddScope means new instance is created for a period or time of request
+            // AddSingleton means one instance will exist for lifetime of application
 
             services.AddSwaggerGen(c =>
             {

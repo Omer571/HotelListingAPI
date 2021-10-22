@@ -54,6 +54,8 @@ namespace HotelListingAPI.Repository
 
             // AsNoTracking means db shouldn't care about this
             // or changes made to it
+            // Return FirstOrDefault answer that matches expression (passed when calling get)
+            // since it is an expression we can by name expression, id expression, etc.
             return await query.AsNoTracking().FirstOrDefaultAsync(expression);
 
         }

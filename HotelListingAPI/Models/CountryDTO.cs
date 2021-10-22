@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
+// DTO Models should be returned by API not Data 
+
 namespace HotelListingAPI.Models
 {
     public class CreateCountryDTO
