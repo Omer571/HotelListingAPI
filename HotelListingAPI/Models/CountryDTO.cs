@@ -19,12 +19,20 @@ namespace HotelListingAPI.Models
         public string ShortName { get; set; }
     }
 
+    public class UpdateCountryDTO : CreateCountryDTO
+    {
+        // this is create hotel dto bc it is a better model of the data
+        // (aka: we don't need id and list of hotels countries)
+        public IList<CreateHotelDTO> Hotels { get; set; }
+    }
+
     public class CountryDTO : CreateCountryDTO
     {
-        public int Id { get; set; }
-        
+        public int CountryId { get; set; }
+
+
         public IList<HotelDTO> Hotels { get; set; }
     }
 
-    
+
 }
