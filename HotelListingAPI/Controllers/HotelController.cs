@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HotelListingAPI.IRepository;
 using HotelListingAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -46,6 +47,7 @@ namespace HotelListingAPI.Controllers
         }
 
         // Swagger Documentation
+        [Authorize]
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

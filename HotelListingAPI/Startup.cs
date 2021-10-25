@@ -2,9 +2,11 @@ using HotelListingAPI.Configurations;
 using HotelListingAPI.Data;
 using HotelListingAPI.IRepository;
 using HotelListingAPI.Repository;
+using HotelListingAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +39,10 @@ namespace HotelListingAPI
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+            services.ConfigureJWT(Configuration);
+
             services.AddControllers().AddNewtonsoftJson(op =>
                 op.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
@@ -59,6 +65,8 @@ namespace HotelListingAPI
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             // AddScope means new instance is created for a period or time of request
+            services.AddScoped<IAuthManager, AuthManager>();
+
             // AddSingleton means one instance will exist for lifetime of application
 
             services.AddSwaggerGen(c =>
@@ -84,7 +92,8 @@ namespace HotelListingAPI
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication(); // Authentication
+            app.UseAuthorization(); // Then authorization, order matters
 
             app.UseEndpoints(endpoints =>
             {

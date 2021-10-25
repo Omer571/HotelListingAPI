@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HotelListingAPI.Configurations.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HotelListingAPI.Data
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : IdentityDbContext<ApiUser> // identity for security
     {
         public DatabaseContext(DbContextOptions options) : base(options)
         {}
@@ -17,53 +19,14 @@ namespace HotelListingAPI.Data
         // seeding data into database
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Country>().HasData(
-                new Country
-                {
-                    CountryId = 1,
-                    Name = "Jamaica",
-                    ShortName = "JM"
-                },
-                new Country
-                {
-                    CountryId = 2,
-                    Name = "Bahamas",
-                    ShortName = "BS"
-                },
-                new Country
-                {
-                    CountryId = 3,
-                    Name = "Cayman Island",
-                    ShortName = "CI"
-                }
-            );
+            // added for security (base class = IdentityDbContext)
+            base.OnModelCreating(builder);
 
-            builder.Entity<Hotel>().HasData(
-                new Hotel
-                {
-                    CountryId = 1,
-                    Name = "Sandals Resort and Spa",
-                    Address = "Negril",
-                    Rating = 4.5,
-                    Id = 1,
-                },
-                new Hotel
-                {
-                    CountryId = 2,
-                    Name = "Grand Palldium",
-                    Address = "Nassua",
-                    Rating = 4.5,
-                    Id = 2,
-                },
-                new Hotel
-                {
-                    CountryId = 3,
-                    Name = "Marriate",
-                    Address = "Gearge Town",
-                    Rating = 4,
-                    Id = 3,
-                }
-            );
+            // fill db with this data
+            builder.ApplyConfiguration(new CountryConfiguration());
+            builder.ApplyConfiguration(new HotelConfiguration());
+            builder.ApplyConfiguration(new RoleConfiguration());
+
         }
 
 
